@@ -1,0 +1,38 @@
+version: "3.8"
+
+services:
+  frontend:
+    depends_on: 
+      - backend
+    build: ./frontend
+    ports:
+      - 3000:3000
+    volumes:
+      - ./frontend:/app
+  frontend-tests:
+    image: UltimateDocker_frontend
+    volumes:
+      - ./frontend:/app
+    command: npm test
+
+  backend: 
+    depends_on: 
+      - db
+    build: ./backend
+    ports: 
+      - 3001:3001
+    environment:
+      DB_URL: mongodb://db/UltimateDocker
+    command: ./docker-entrypoint.sh
+    volumes:
+      - ./backend:/app
+
+  db:
+    image: mongo:4.0-xenial
+    ports:
+      - 27017:27017
+    volumes:
+      - UltimateDocker:/data/db
+
+volumes:
+  UltimateDocker:
